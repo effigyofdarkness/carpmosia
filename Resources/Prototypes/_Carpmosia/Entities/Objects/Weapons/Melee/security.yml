@@ -1,7 +1,7 @@
 - type: entity
-  name: security breacher
   parent: [ BaseItem, BasePointerHammer ]
   id: SecBreacher
+  name: security breacher
   description: The ultimate breaching tool designed to destroy obstacles and pry ANY door.
   components:
   - type: Sprite
@@ -29,7 +29,7 @@
     size: Ginormous
   - type: Tool
     qualities:
-      - Prying
+    - Prying
     useSound: /Audio/Items/jaws_pry.ogg
   - type: Prying
     pryPowered: true
