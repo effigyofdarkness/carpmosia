@@ -5,7 +5,7 @@
   description: The ultimate breaching tool designed to destroy obstacles and pry ANY door.
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Melee/secbreacher.rsi
+    sprite: _Carpmosia/Objects/Weapons/Melee/secbreacher.rsi
     state: icon
   - type: MeleeWeapon
     wideAnimationRotation: -135
@@ -36,7 +36,7 @@
     force: true
     speedModifier: 1.5
   - type: Clothing
-    sprite: Objects/Weapons/Melee/secbreacher.rsi
+    sprite: _Carpmosia/Objects/Weapons/Melee/secbreacher.rsi
     quickEquip: false
     slots:
     - back
