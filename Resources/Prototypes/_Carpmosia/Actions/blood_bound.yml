@@ -18,6 +18,26 @@
       - HumanoidProfile
     canTargetSelf: false
 
+# Carpmosia-start - Bloodbound rework
+- type: entity
+  parent: BaseAction
+  id: ActionBloodBoundGlare
+  name: Bloody glare
+  description: Create a blood crystal from your brother's blood.
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+  - type: Sprite
+    sprite: Interface/VerbIcons/vv.svg.192dpi.png
+  - type: TargetAction
+  - type: EntityTargetAction
+    event: !type:BloodBoundGlareActionEvent
+    whitelist:
+      components:
+      - HumanoidProfile
+    canTargetSelf: false
+# Carpmosia-end - Bloodbound rework
+
 - type: entity
   parent: BaseAction
   id: ActionBloodBoundCheckConvert
