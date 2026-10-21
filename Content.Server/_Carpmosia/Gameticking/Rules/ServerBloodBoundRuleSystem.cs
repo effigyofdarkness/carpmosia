@@ -24,6 +24,7 @@ using Robust.Server.Player;
 using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.GameTicking.Rules.Components;
+using Content.Shared.Jittering;
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -42,6 +43,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     [Dependency] private RoleSystem _roleSystem = default!;
     [Dependency] private StunSystem _stunSystem = default!;
     [Dependency] private TargetObjectiveSystem _targetObjectiveSystem = default!;
+    [Dependency] private SharedJitteringSystem _jittering = default!;
 
     [SubscribeLocalEvent]
     private void OnObjectivesTextPrepend(Entity<BloodBoundRuleComponent> entity, ref ObjectivesTextPrependEvent args)
@@ -295,5 +297,21 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
         // If we somehow get here, its because we failed to find the preferences
         errorMessage = "blood-bound-convert-failed-preference";
         return false;
+    }
+
+    [SubscribeLocalEvent]
+    private void OnBloodBoundGlare(Entity<InitialBloodBoundComponent> entity,
+        ref BloodBoundGlareActionEvent args)
+    {
+        if (!TryComp<BloodBoundComponent>(args.Target, out var convertedComp))
+            return;
+
+        if (convertedComp.Bound != entity.Owner) return;
+
+        if (entity.Comp.GlareStunTime != null){
+            _stunSystem.TryUpdateParalyzeDuration(args.Target, entity.Comp.GlareStunTime);
+            _jittering.DoJitter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, true, 10, 5, false);
+        }
+
     }
 }

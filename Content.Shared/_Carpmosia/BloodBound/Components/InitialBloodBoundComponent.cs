@@ -33,6 +33,14 @@ public sealed partial class InitialBloodBoundComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? CheckConvertActionEntity;
 
+    // Carpmosia-start - Bloodbound rework
+    [DataField]
+    public EntProtoId<EntityTargetActionComponent> BloodyGlareAction = "ActionBloodBoundGlare";
+
+    [DataField, AutoNetworkedField]
+    public EntityUid? BloodyGlareActionEntity;
+    // Carpmosia-end - Bloodbound rework
+
     #endregion
 
     /// <summary>
@@ -60,6 +68,15 @@ public sealed partial class InitialBloodBoundComponent : Component
     /// </summary>
     [DataField]
     public TimeSpan? ConvertStunTime = TimeSpan.FromSeconds(3);
+
+    // Carpmosia-start - Bloodbound rework
+    /// <summary>
+    /// The time for which the converted will be stunned after being glared at by their initial bloodbound
+    /// If null, the converted will not be stunned
+    /// </summary>
+    [DataField]
+    public TimeSpan? GlareStunTime = TimeSpan.FromSeconds(5);
+    // Carpmosia-end - Bloodbound rework
 
     /// <summary>
     /// The objective that will be given to the converted.
@@ -99,3 +116,5 @@ public sealed partial class InitialBloodBoundComponent : Component
 public sealed partial class BloodBoundConvertActionEvent : EntityTargetActionEvent;
 
 public sealed partial class BloodBoundCheckConvertActionEvent : EntityTargetActionEvent;
+
+public sealed partial class BloodBoundGlareActionEvent : EntityTargetActionEvent;
