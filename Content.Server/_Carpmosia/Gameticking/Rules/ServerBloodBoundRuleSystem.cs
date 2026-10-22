@@ -30,6 +30,7 @@ using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Robust.Shared.Prototypes;
 using Content.Shared.Mindshield;
+using Content.Shared.Speech.EntitySystems;
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -51,6 +52,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     [Dependency] private TargetObjectiveSystem _targetObjectiveSystem = default!;
     [Dependency] private SharedJitteringSystem _jittering = default!;
     [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private StutteringSystem _stuttering = default!;
 
     [Dependency] private EntityQuery<BloodBoundComponent> _boundQuery;
     [Dependency] private EntityQuery<BloodBoundTargetComponent> _boundTargetQuery;
@@ -327,7 +329,14 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
         if (entity.Comp.GlareStunTime != null){
             _stunSystem.TryUpdateParalyzeDuration(args.Target, entity.Comp.GlareStunTime);
             _jittering.DoJitter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, true, 10, 5, false);
+            _stuttering.DoStutter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, false);
         }
         _damageable.ChangeDamage((args.Target, _entityManager.GetComponent<DamageableComponent>(args.Target)), new DamageSpecifier(ProtoMan.Index((ProtoId<DamageTypePrototype>)"Blunt"), 25), true);
+        // this is stupid as fuck
+        _actionsSystem.SetCooldown(entity.Comp.BloodyGlareActionEntity,
+            entity.Comp.GlareStunTime != null
+            ? (System.TimeSpan) entity.Comp.GlareStunTime
+            : TimeSpan.FromSeconds(1)
+        );
     }
 }
