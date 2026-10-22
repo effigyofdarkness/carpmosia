@@ -25,6 +25,11 @@ using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.GameTicking.Rules.Components;
 using Content.Shared.Jittering;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Prototypes;
+using Content.Shared.Damage.Systems;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -44,6 +49,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     [Dependency] private StunSystem _stunSystem = default!;
     [Dependency] private TargetObjectiveSystem _targetObjectiveSystem = default!;
     [Dependency] private SharedJitteringSystem _jittering = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
 
     [SubscribeLocalEvent]
     private void OnObjectivesTextPrepend(Entity<BloodBoundRuleComponent> entity, ref ObjectivesTextPrependEvent args)
@@ -312,6 +318,6 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
             _stunSystem.TryUpdateParalyzeDuration(args.Target, entity.Comp.GlareStunTime);
             _jittering.DoJitter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, true, 10, 5, false);
         }
-
+        _damageable.SetDamage(TryComp<DamageableComponent>(entity, DamageableComponent), new DamageSpecifier(ProtoMan.Index((ProtoId<DamageTypePrototype>)"Blunt"), 25));
     }
 }
