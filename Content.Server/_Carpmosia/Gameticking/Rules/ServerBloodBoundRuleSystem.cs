@@ -328,6 +328,6 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
             _stunSystem.TryUpdateParalyzeDuration(args.Target, entity.Comp.GlareStunTime);
             _jittering.DoJitter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, true, 10, 5, false);
         }
-        _damageable.SetDamage((args.Target, _entityManager.GetComponent<DamageableComponent>(args.Target)), new DamageSpecifier(ProtoMan.Index((ProtoId<DamageTypePrototype>)"Blunt"), 25));
+        _damageable.ChangeDamage((args.Target, _entityManager.GetComponent<DamageableComponent>(args.Target)), new DamageSpecifier(ProtoMan.Index((ProtoId<DamageTypePrototype>)"Blunt"), 25), true);
     }
 }
