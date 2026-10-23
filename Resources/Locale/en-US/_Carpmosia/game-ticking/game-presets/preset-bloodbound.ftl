@@ -30,3 +30,8 @@ blood-bound-convert-failed-preference = {CAPITALIZE(THE($converted))}'s mind is 
 
 blood-bound-convert-convertible = {CAPITALIZE(THE($converted))} is convertible.
 blood-bound-conversion-popup = {CAPITALIZE(THE($converter))} grabs {THE($converted)} firmly and digs deep symbols into their arms.
+
+## Carpmosia-start - Bloodbound rework
+blood-bound-glare-failed-not-bound = {CAPITALIZE(THE($target))} is not your bloodbound.
+blood-bound-glare = {CAPITALIZE(THE($initial))} glares into the eyes of {CAPITALIZE(THE($target))}.
+## Carpmosia-end - Bloodbound rework
