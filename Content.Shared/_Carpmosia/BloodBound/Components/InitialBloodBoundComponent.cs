@@ -33,13 +33,11 @@ public sealed partial class InitialBloodBoundComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? CheckConvertActionEntity;
 
-    // Carpmosia-start - Bloodbound rework
     [DataField]
     public EntProtoId<EntityTargetActionComponent> BloodyGlareAction = "ActionBloodBoundGlare";
 
     [DataField, AutoNetworkedField]
     public EntityUid? BloodyGlareActionEntity;
-    // Carpmosia-end - Bloodbound rework
 
     #endregion
 
