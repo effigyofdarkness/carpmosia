@@ -31,6 +31,7 @@ using Content.Shared.Damage.Systems;
 using Robust.Shared.Prototypes;
 using Content.Shared.Mindshield;
 using Content.Shared.Speech.EntitySystems;
+using Robust.Server.GameObjects;
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -53,6 +54,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     [Dependency] private SharedJitteringSystem _jittering = default!;
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private StutteringSystem _stuttering = default!;
+    [Dependency] private TransformSystem _transform = default!;
 
     [Dependency] private EntityQuery<BloodBoundComponent> _boundQuery;
     [Dependency] private EntityQuery<BloodBoundTargetComponent> _boundTargetQuery;
@@ -351,6 +353,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
                 ("target", Identity.Entity(args.Target, _entityManager))),
             args.Target,
             PopupType.LargeCaution);
+        Spawn("BloodCrystal", _transform.GetMapCoordinates(args.Target));
     }
 
     private bool CanGlare(Entity<InitialBloodBoundComponent> entity,
