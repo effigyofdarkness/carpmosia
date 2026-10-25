@@ -29,7 +29,8 @@
     itemIconStyle: BigAction
   - type: Sprite
     sprite: _Carpmosia/Objects/Specific/Bloodbound/bloodcrystal.rsi
-    state: bloodcrystal
+    layers:
+    - state: bloodcrystal
   - type: TargetAction
   - type: EntityTargetAction
     event: !type:BloodBoundGlareActionEvent
