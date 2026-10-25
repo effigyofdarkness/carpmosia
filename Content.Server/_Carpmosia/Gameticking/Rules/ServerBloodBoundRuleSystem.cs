@@ -326,7 +326,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
         if (!CanGlare(entity, args.Target, out var reason))
         {
             _popupSystem.PopupEntity(
-                Loc.GetString("blood-bound-glare-failed-not-bound", ("target", Identity.Entity(args.Target, _entityManager))),
+                Loc.GetString(reason, ("target", Identity.Entity(args.Target, _entityManager))),
                 args.Target,
                 entity,
                 PopupType.MediumCaution
