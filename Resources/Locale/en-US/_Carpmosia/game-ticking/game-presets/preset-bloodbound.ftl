@@ -33,5 +33,6 @@ blood-bound-conversion-popup = {CAPITALIZE(THE($converter))} grabs {THE($convert
 
 ## Carpmosia-start - Bloodbound rework
 blood-bound-glare-failed-not-bound = {CAPITALIZE(THE($target))} is not your bloodbound.
+blood-bound-glare-failed-dead = {CAPITALIZE(THE($target))} is dead.
 blood-bound-glare = {CAPITALIZE(THE($initial))} glares into the eyes of {CAPITALIZE(THE($target))}.
 ## Carpmosia-end - Bloodbound rework

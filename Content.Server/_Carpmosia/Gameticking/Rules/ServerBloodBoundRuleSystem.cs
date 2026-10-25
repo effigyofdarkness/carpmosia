@@ -323,7 +323,7 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     private void OnBloodBoundGlare(Entity<InitialBloodBoundComponent> entity,
         ref BloodBoundGlareActionEvent args)
     {
-        if (!CanGlare(entity, args.Target))
+        if (!CanGlare(entity, args.Target, out var reason))
         {
             _popupSystem.PopupEntity(
                 Loc.GetString("blood-bound-glare-failed-not-bound", ("target", Identity.Entity(args.Target, _entityManager))),
@@ -357,10 +357,23 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     }
 
     private bool CanGlare(Entity<InitialBloodBoundComponent> entity,
-        EntityUid target)
+        EntityUid target,
+        [NotNullWhen(false)] out string? reason)
     {
-        if (!TryComp<BloodBoundComponent>(target, out var convertedComp)) return false;
-        if (convertedComp.Bound != entity.Owner) return false;
+        if (!TryComp<BloodBoundComponent>(target, out var convertedComp)){
+            reason = "blood-bound-glare-failed-not-bound";
+            return false;
+        };
+        if (convertedComp.Bound != entity.Owner){
+            reason = "blood-bound-glare-failed-not-bound";
+            return false;
+        }
+        if (!_mobStateSystem.IsAlive(target))
+        {
+            reason = "blood-bound-glare-failed-dead";
+            return false;
+        }
+        reason = "";
         return true;
     }
 }
