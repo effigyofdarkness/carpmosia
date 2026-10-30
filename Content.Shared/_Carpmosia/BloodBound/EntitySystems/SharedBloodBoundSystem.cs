@@ -15,7 +15,6 @@ public abstract partial class SharedBloodBoundSystem : EntitySystem
     {
         _actionsSystem.AddAction(entity, ref entity.Comp.ConvertActionEntity, entity.Comp.ConvertAction);
         _actionsSystem.AddAction(entity, ref entity.Comp.CheckConvertActionEntity, entity.Comp.CheckConvertAction);
-        // Carpmosia-edit - Bloodbound rework
         _actionsSystem.AddAction(entity, ref entity.Comp.BloodyGlareActionEntity, entity.Comp.BloodyGlareAction);
         Dirty(entity);
     }
@@ -25,6 +24,7 @@ public abstract partial class SharedBloodBoundSystem : EntitySystem
     {
         _actionsSystem.RemoveAction(entity.Comp.ConvertActionEntity);
         _actionsSystem.RemoveAction(entity.Comp.CheckConvertActionEntity);
+        _actionsSystem.RemoveAction(entity.Comp.BloodyGlareActionEntity);
     }
 
     [SubscribeLocalEvent]

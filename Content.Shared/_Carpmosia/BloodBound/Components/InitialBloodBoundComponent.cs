@@ -97,6 +97,12 @@ public sealed partial class InitialBloodBoundComponent : Component
     #endregion
 
     /// <summary>
+    /// Progress until the bloodbound can start the roaring.
+    /// </summary>
+    [DataField]
+    public int RoaringProgress = 0;
+
+    /// <summary>
     /// The faction that the new blood bound will be added to.
     /// </summary>
     [DataField]

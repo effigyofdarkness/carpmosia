@@ -23,15 +23,7 @@ using Robust.Server.Player;
 using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.GameTicking.Rules.Components;
-using Content.Shared.Jittering;
-using Content.Shared.Damage;
-using Content.Shared.Damage.Components;
-using Content.Shared.Damage.Prototypes;
-using Content.Shared.Damage.Systems;
-using Robust.Shared.Prototypes;
 using Content.Shared.Mindshield;
-using Content.Shared.Speech.EntitySystems;
-using Robust.Server.GameObjects;
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -51,10 +43,6 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
     [Dependency] private RoleSystem _roleSystem = default!;
     [Dependency] private StunSystem _stunSystem = default!;
     [Dependency] private TargetObjectiveSystem _targetObjectiveSystem = default!;
-    [Dependency] private SharedJitteringSystem _jittering = default!;
-    [Dependency] private DamageableSystem _damageable = default!;
-    [Dependency] private StutteringSystem _stuttering = default!;
-    [Dependency] private TransformSystem _transform = default!;
 
     [Dependency] private EntityQuery<BloodBoundComponent> _boundQuery;
     [Dependency] private EntityQuery<BloodBoundTargetComponent> _boundTargetQuery;
@@ -317,63 +305,5 @@ public sealed partial class ServerBloodBoundRuleSystem : BloodBoundRuleSystem
         // If we somehow get here, its because we failed to find the preferences
         errorMessage = "blood-bound-convert-failed-preference";
         return false;
-    }
-
-    [SubscribeLocalEvent]
-    private void OnBloodBoundGlare(Entity<InitialBloodBoundComponent> entity,
-        ref BloodBoundGlareActionEvent args)
-    {
-        if (!CanGlare(entity, args.Target, out var reason))
-        {
-            _popupSystem.PopupEntity(
-                Loc.GetString(reason, ("target", Identity.Entity(args.Target, _entityManager))),
-                args.Target,
-                entity,
-                PopupType.MediumCaution
-            );
-            return;
-        }
-
-        if (entity.Comp.GlareStunTime != null){
-            _stunSystem.TryUpdateParalyzeDuration(args.Target, entity.Comp.GlareStunTime);
-            _jittering.DoJitter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, true, 10, 5, false);
-            _stuttering.DoStutter(args.Target, (System.TimeSpan) entity.Comp.GlareStunTime, false);
-        }
-        _damageable.ChangeDamage((args.Target, _entityManager.GetComponent<DamageableComponent>(args.Target)), new DamageSpecifier(ProtoMan.Index((ProtoId<DamageTypePrototype>)"Slash"), 25), true);
-        // this is stupid as fuck
-        _actionsSystem.SetCooldown(entity.Comp.BloodyGlareActionEntity,
-            entity.Comp.GlareStunTime != null
-            ? (System.TimeSpan) entity.Comp.GlareStunTime
-            : TimeSpan.FromSeconds(1)
-        );
-        _popupSystem.PopupEntity(
-            Loc.GetString(
-                Loc.GetString("blood-bound-glare"),
-                ("initial", Identity.Entity(entity, _entityManager)),
-                ("target", Identity.Entity(args.Target, _entityManager))),
-            args.Target,
-            PopupType.LargeCaution);
-        Spawn("BloodCrystal", _transform.GetMapCoordinates(args.Target));
-    }
-
-    private bool CanGlare(Entity<InitialBloodBoundComponent> entity,
-        EntityUid target,
-        [NotNullWhen(false)] out string? reason)
-    {
-        if (!TryComp<BloodBoundComponent>(target, out var convertedComp)){
-            reason = "blood-bound-glare-failed-not-bound";
-            return false;
-        };
-        if (convertedComp.Bound != entity.Owner){
-            reason = "blood-bound-glare-failed-not-bound";
-            return false;
-        }
-        if (!_mobStateSystem.IsAlive(target))
-        {
-            reason = "blood-bound-glare-failed-dead";
-            return false;
-        }
-        reason = "";
-        return true;
     }
 }
