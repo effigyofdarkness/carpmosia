@@ -9,6 +9,7 @@ using Robust.Client.Player;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Content.Client.BloodBound.EntitySystems;
 
@@ -18,6 +19,7 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private AnimationPlayerSystem _animation = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     // copied from Content.Client/Weapons/Melee/MeleeWeaponSystem.Effects.cs
     private Animation GetFadeAnimation(SpriteComponent sprite, float start, float end)
@@ -41,13 +43,15 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
         };
     }
 
-    private void BloodboundGlareEffect(EntityCoordinates coords)
+    private void BloodboundGlareEffect(EntityUid target)
     {
         // todo: change to blodobound aura
         for (int i = 0; i < 10; i++)
         {
-            EntityUid spreadEffect = SpawnAttachedTo("JetpackEffect", coords.Offset(new System.Numerics.Vector2(_random.NextFloat(), _random.NextFloat())));
+            EntityUid spreadEffect = SpawnAttachedTo("BloodGlareAura", target.ToCoordinates().Offset(new System.Numerics.Vector2(_random.NextFloat(), _random.NextFloat())));
             Debug.Assert(TryComp<SpriteComponent>(spreadEffect, out var sprite));
+            int selectedIteration = _random.Next(1, 3);
+            _sprite.LayerSetRsiState((target, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
             _animation.Play(spreadEffect, GetFadeAnimation(sprite, 0, 1), "effect-fade");
         }
     }
@@ -55,11 +59,12 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
     [SubscribeNetworkEvent]
     private void BloodboundEffect(BloodBoundComponent.BloodboundEffect args)
     {
+        EntityUid target = _entityManager.GetEntity(args.Target);
         switch (args.Effect)
         {
             default:
             case "Glare":
-                BloodboundGlareEffect(_entityManager.GetEntity(args.Target).ToCoordinates());
+                BloodboundGlareEffect(target);
                 break;
         }
     }

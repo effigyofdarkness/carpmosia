@@ -10,3 +10,23 @@
   - type: Item
     sprite: _Carpmosia/Objects/Specific/Bloodbound/bloodcrystal.rsi
     size: Tiny
+
+- type: entity
+  id: BloodGlareAura
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 1
+  - type: Sprite
+    drawdepth: SmallMobs
+    noRot: true
+    layers:
+    - shader: unshaded
+      map: ["enum.EffectLayers.Unshaded"]
+      sprite: _Carpmosia/Objects/Specific/Bloodbound/bloodboundglareaura.rsi
+      state: aura-iteration-1
+  - type: EffectVisuals
+  - type: Tag
+    tags:
+      - HideContextMenu
+  - type: AnimationPlayer
