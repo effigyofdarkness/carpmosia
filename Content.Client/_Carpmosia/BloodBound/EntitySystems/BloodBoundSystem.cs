@@ -52,7 +52,7 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
             if (sprite != null)
             {
                 int selectedIteration = _random.Next(1, 3);
-                _sprite.LayerSetRsiState((target, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
+                _sprite.LayerSetRsiState((spreadEffect, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
                 _animation.Play(spreadEffect, GetFadeAnimation(sprite, 0, 1), "effect-fade");
             }
         }
