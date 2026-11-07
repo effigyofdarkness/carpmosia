@@ -107,7 +107,7 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
             true
         );
         if (entity.Comp.GlareStunTime != null) _actionsSystem.SetCooldown(entity.Comp.BloodyGlareActionEntity, (TimeSpan) entity.Comp.GlareStunTime);
-        RaiseNetworkEvent(new BloodBoundComponent.BloodboundEffect(args.Target, null, "Glare"));
+        RaiseNetworkEvent(new BloodBoundComponent.BloodboundEffect(_entityManager.GetNetEntity(args.Target), "Glare"));
         _popupSystem.PopupEntity(
             Loc.GetString(
                 Loc.GetString("blood-bound-glare"),

@@ -10,17 +10,15 @@ namespace Content.Shared.BloodBound.Components;
 [AutoGenerateComponentState]
 public sealed partial class BloodBoundComponent : Component
 {
-    [NetSerializable, Serializable]
+    [Serializable, NetSerializable]
     public sealed class BloodboundEffect : EntityEventArgs
     {
-        public EntityUid? Target { get; }
-        public EntityCoordinates? Coordinates { get; }
+        public NetEntity Target { get; }
         public string? Effect { get; }
         // there has to be a better way to handle these args
-        public BloodboundEffect(EntityUid? target, EntityCoordinates? coordinates, string effect)
+        public BloodboundEffect(NetEntity target, string effect)
         {
             Target = target;
-            Coordinates = coordinates;
             Effect = effect;
         }
     }
