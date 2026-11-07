@@ -47,9 +47,9 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
         // todo: change to blodobound aura
         for (int i = 0; i < 20; i++)
         {
-            EntityUid spreadEffect = SpawnAttachedTo("BloodGlareAura", 
+            EntityUid spreadEffect = SpawnAttachedTo("BloodGlareAura",
                 target.ToCoordinates().Offset(
-                    new System.Numerics.Vector2(_random.NextFloat() * 2 - 1, _random.NextFloat() * 2 - 1)
+                    new System.Numerics.Vector2(_random.NextFloat(-1 / 2, 1 / 2), _random.NextFloat(-1 / 2, 1 / 2))
                 )
             );
             TryComp<SpriteComponent>(spreadEffect, out var sprite);
