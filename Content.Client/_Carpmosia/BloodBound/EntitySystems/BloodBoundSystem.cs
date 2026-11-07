@@ -8,7 +8,6 @@ using Robust.Client.Animations;
 using Robust.Client.Player;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Content.Client.BloodBound.EntitySystems;
@@ -49,10 +48,13 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
         for (int i = 0; i < 10; i++)
         {
             EntityUid spreadEffect = SpawnAttachedTo("BloodGlareAura", target.ToCoordinates().Offset(new System.Numerics.Vector2(_random.NextFloat(), _random.NextFloat())));
-            Debug.Assert(TryComp<SpriteComponent>(spreadEffect, out var sprite));
-            int selectedIteration = _random.Next(1, 3);
-            _sprite.LayerSetRsiState((target, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
-            _animation.Play(spreadEffect, GetFadeAnimation(sprite, 0, 1), "effect-fade");
+            TryComp<SpriteComponent>(spreadEffect, out var sprite);
+            if (sprite != null)
+            {
+                int selectedIteration = _random.Next(1, 3);
+                _sprite.LayerSetRsiState((target, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
+                _animation.Play(spreadEffect, GetFadeAnimation(sprite, 0, 1), "effect-fade");
+            }
         }
     }
 
