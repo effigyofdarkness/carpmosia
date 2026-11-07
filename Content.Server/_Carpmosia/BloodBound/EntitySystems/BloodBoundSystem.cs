@@ -1,5 +1,4 @@
 using System.Linq;
-using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using Content.Shared.IdentityManagement;
 using Content.Server.Actions;
@@ -21,6 +20,7 @@ using Content.Shared.Popups;
 using Content.Server.Popups;
 using Content.Shared.Mobs.Systems;
 using System.Diagnostics.CodeAnalysis;
+using Content.Shared.Coordinates;
 
 namespace Content.Server.BloodBound.EntitySystems;
 
@@ -33,7 +33,6 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
     [Dependency] private SharedJitteringSystem _jittering = default!;
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private StutteringSystem _stuttering = default!;
-    [Dependency] private TransformSystem _transform = default!;
     [Dependency] private PopupSystem _popupSystem = default!;
     [Dependency] private MobStateSystem _mobStateSystem = default!;
     [Dependency] private IEntityManager _entityManager = default!;
@@ -96,7 +95,8 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
             return;
         }
 
-        if (entity.Comp.GlareStunTime != null){
+        if (entity.Comp.GlareStunTime != null)
+        {
             _stunSystem.TryUpdateParalyzeDuration(args.Target, entity.Comp.GlareStunTime);
             _jittering.DoJitter(args.Target, (TimeSpan) entity.Comp.GlareStunTime, true, 10, 5, false);
             _stuttering.DoStutter(args.Target, (TimeSpan) entity.Comp.GlareStunTime, false);
@@ -106,20 +106,17 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
             new DamageSpecifier(ProtoMan.Index((ProtoId<DamageTypePrototype>)"Slash"), 25),
             true
         );
-        // this is stupid as fuck
-        _actionsSystem.SetCooldown(entity.Comp.BloodyGlareActionEntity,
-            entity.Comp.GlareStunTime != null
-            ? (TimeSpan) entity.Comp.GlareStunTime
-            : TimeSpan.FromSeconds(1)
-        );
+        if (entity.Comp.GlareStunTime != null) _actionsSystem.SetCooldown(entity.Comp.BloodyGlareActionEntity, (TimeSpan) entity.Comp.GlareStunTime);
+        RaiseNetworkEvent(new BloodBoundComponent.BloodboundEffect(args.Target, null, "Glare"));
         _popupSystem.PopupEntity(
             Loc.GetString(
                 Loc.GetString("blood-bound-glare"),
                 ("initial", Identity.Entity(entity, _entityManager)),
-                ("target", Identity.Entity(args.Target, _entityManager))),
+                ("target", Identity.Entity(args.Target, _entityManager))
+            ),
             args.Target,
             PopupType.LargeCaution);
-        Spawn("BloodCrystal", _transform.GetMapCoordinates(args.Target));
+        SpawnAtPosition("BloodCrystal", args.Target.ToCoordinates());
     }
 
     private bool CanGlare(Entity<InitialBloodBoundComponent> entity,

@@ -18,7 +18,6 @@
       - HumanoidProfile
     canTargetSelf: false
 
-# Carpmosia-start - Bloodbound rework
 - type: entity
   parent: BaseAction
   id: ActionBloodBoundGlare
@@ -38,7 +37,6 @@
       components:
       - HumanoidProfile
     canTargetSelf: false
-# Carpmosia-end - Bloodbound rework
 
 - type: entity
   parent: BaseAction
