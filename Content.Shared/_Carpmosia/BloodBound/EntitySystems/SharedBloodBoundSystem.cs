@@ -1,6 +1,7 @@
 using Content.Shared.Actions;
 using Content.Shared.Antag;
 using Content.Shared.BloodBound.Components;
+using Content.Shared.Coordinates;
 using Robust.Shared.GameStates;
 using Robust.Shared.Player;
 
@@ -9,6 +10,40 @@ namespace Content.Shared.BloodBound.EntitySystems;
 public abstract partial class SharedBloodBoundSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actionsSystem = default!;
+    [Dependency] private SharedUserInterfaceSystem _ui = default!;
+
+    private const string BloodBoundXmlGeneratedName = "BloodBoundRitualUserInterface";
+    [SubscribeLocalEvent]
+    private void SummonAltar(Entity<InitialBloodBoundComponent> entity, ref BloodBoundComponent.SummonAltarRequest args)
+    {
+        EntityUid altar = PredictedSpawnAtPosition("BloodBoundAltar", entity.Owner.ToCoordinates());
+    }
+
+    [SubscribeLocalEvent]
+    private void OnBloodBoundRitual(Entity<BloodBoundComponent> entity, ref BloodBoundRitualActionEvent args)
+    {
+        if (!TryComp<UserInterfaceComponent>(entity, out var userInterfaceComp))
+            return;
+
+        if (!HasComp<BloodBoundComponent>(entity))
+            return;
+
+        if (!_ui.IsUiOpen((entity, userInterfaceComp), BloodBoundRitualUiKey.Key, args.Performer))
+        {
+            _ui.OpenUi((entity, userInterfaceComp), BloodBoundRitualUiKey.Key, args.Performer);
+        }
+    }
+
+    [SubscribeLocalEvent]
+    private void OnBloodBoundMapInit(Entity<BloodBoundComponent> entity, ref MapInitEvent args)
+    {
+        _actionsSystem.AddAction(entity, ref entity.Comp.RitualActionEntity, entity.Comp.RitualAction);
+
+        var userInterfaceComp = EnsureComp<UserInterfaceComponent>(entity);
+        _ui.SetUi((entity, userInterfaceComp), BloodBoundRitualUiKey.Key, new InterfaceData(BloodBoundXmlGeneratedName));
+
+        Dirty(entity);
+    }
 
     [SubscribeLocalEvent]
     private void OnInitialBloodBoundMapInit(Entity<InitialBloodBoundComponent> entity, ref MapInitEvent args)

@@ -41,6 +41,8 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
     [SubscribeLocalEvent]
     private void OnBloodBoundShutdown(Entity<BloodBoundComponent> entity, ref ComponentShutdown args)
     {
+        _actionsSystem.RemoveAction(entity.Comp.RitualActionEntity);
+
         if (!_mindSystem.TryGetMind(entity, out var mindId, out var mind))
             return;
 

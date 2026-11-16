@@ -6,9 +6,7 @@ using Content.Shared.StatusIcon.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Animations;
 using Robust.Client.Player;
-using Robust.Shared.Map;
 using Robust.Shared.Random;
-using System.Linq;
 
 namespace Content.Client.BloodBound.EntitySystems;
 
@@ -44,7 +42,6 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
 
     private void BloodboundGlareEffect(EntityUid target)
     {
-        // todo: change to blodobound aura
         for (int i = 0; i < 20; i++)
         {
             EntityUid spreadEffect = SpawnAttachedTo("BloodGlareAura",
@@ -53,24 +50,32 @@ public sealed partial class BloodBoundSystem : SharedBloodBoundSystem
                 )
             );
             TryComp<SpriteComponent>(spreadEffect, out var sprite);
-            if (sprite != null)
-            {
-                int selectedIteration = _random.Next(1, 3);
-                _sprite.LayerSetRsiState((spreadEffect, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
-                _animation.Play(spreadEffect, GetFadeAnimation(sprite, 0, 1), "effect-fade");
-            }
+            if (sprite == null) continue;
+            int selectedIteration = _random.Next(1, 3);
+            _sprite.LayerSetRsiState((spreadEffect, sprite), 0, "aura-iteration-" + selectedIteration.ToString());
+            _animation.Play(spreadEffect, GetFadeAnimation(sprite, 0, 1), "effect-fade");
         }
+    }
+
+    private void BloodboundAltarSpawnEffect(EntityUid target)
+    {
+        
     }
 
     [SubscribeNetworkEvent]
     private void BloodboundEffect(BloodBoundComponent.BloodboundEffect args)
     {
-        EntityUid target = _entityManager.GetEntity(args.Target);
+        _entityManager.TryGetEntity(args.Target, out var target);
+        if (target == null) return;
         switch (args.Effect)
         {
-            default:
             case "Glare":
-                BloodboundGlareEffect(target);
+                BloodboundGlareEffect(target.Value);
+                break;
+            case "AltarSpawn":
+                BloodboundAltarSpawnEffect(target.Value);
+                break;
+            default:
                 break;
         }
     }
