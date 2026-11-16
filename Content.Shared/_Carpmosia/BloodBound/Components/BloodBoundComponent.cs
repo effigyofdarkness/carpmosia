@@ -1,3 +1,5 @@
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.StatusIcon;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
@@ -23,6 +25,17 @@ public sealed partial class BloodBoundComponent : Component
         }
     }
 
+    [Serializable, NetSerializable]
+    public sealed class SummonAltarRequest() : BoundUserInterfaceMessage
+    {
+    }
+
+    [DataField]
+    public EntProtoId<InstantActionComponent> RitualAction = "ActionBloodBoundRitual";
+
+    [DataField, AutoNetworkedField]
+    public EntityUid? RitualActionEntity;
+
     [DataField, AutoNetworkedField]
     public EntityUid? Bound;
 
@@ -35,3 +48,5 @@ public sealed partial class BloodBoundComponent : Component
     public override bool SessionSpecific => true;
 
 }
+
+public sealed partial class BloodBoundRitualActionEvent : InstantActionEvent;

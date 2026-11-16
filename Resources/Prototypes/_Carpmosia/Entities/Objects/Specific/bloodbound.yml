@@ -30,3 +30,9 @@
     tags:
       - HideContextMenu
   - type: AnimationPlayer
+
+- type: entity
+  parent: AltarChaos
+  id: BloodBoundAltar
+  components:
+    - type: BloodBoundAltar
